@@ -1,0 +1,235 @@
+#include<stdio.h>
+#include<stdlib.h>
+
+struct node{
+	int data;
+	struct node* next;
+};
+
+typedef struct node node;
+node* head=NULL;
+
+node* getnode(int data)
+{
+	node* newnode=(node*)malloc(sizeof(node));
+	newnode->data=data;
+	newnode->next=NULL;
+	return newnode;
+}
+
+void pushhead(node** head,int data)
+{
+	if(*head==NULL)
+	*head=getnode(data);
+	else
+	{
+		node* temp=getnode(data);
+		temp->next=*head;
+		*head=temp;
+	}
+}
+
+int pophead(node** head)
+{
+	if(*head==NULL)
+	printf("No elements to pop in the list.");
+	else
+	{
+		node* temp=*head;
+		printf("\nElement popped is %d",temp->data);
+		*head=(*head)->next;
+		free(temp);
+	}
+}
+
+void pushtail(node** head,int data)
+{
+	if(*head==NULL)
+	*head=getnode(data);
+	else
+	{
+		node* ptr=*head;
+		while(ptr->next!=NULL)
+		ptr=ptr->next;
+		ptr->next=getnode(data);
+	}
+}
+
+int poptail(node** head)
+{
+	if(*head==NULL)
+	printf("No elements to pop in the list.");
+	else
+	{
+		node* ptr=*head;
+		while(ptr->next->next!=NULL)
+		ptr=ptr->next;	
+		printf("\nElement popped is %d ",ptr->next->data);
+		free(ptr->next);
+		ptr->next=NULL;
+	}
+}
+
+void pushpos(node** head,int data,int pos)
+{
+	if(*head==NULL && pos!=1)
+	printf("\nError! Not enough nodes in the list for insertion at given position.");
+	else if(*head==NULL && pos==1)
+	*head=getnode(data);
+	else
+	{
+		node* ptr=*head;
+		int count=0;
+		while(ptr!=NULL)
+		{
+			++count;
+			ptr=ptr->next;
+		}
+		if(pos>count+1)
+		printf("\nError! Not enough nodes in the list for insertion at given position.");
+		else
+		{
+			int i;ptr=*head;
+			for(i=1;i<pos-1;i++)
+			ptr=ptr->next;
+			node* temp=getnode(data);
+			temp->next=ptr->next;
+			ptr->next=temp;
+		}
+	}
+}
+
+void poppos(node** head,int pos)
+{
+	if(*head==NULL)
+	printf("\nNo elements in the list to be popped.");
+	else
+	{
+		int i;node* ptr=*head;
+		for(i=1;i<pos-1;i++)
+			{
+				ptr=ptr->next;
+			}
+		node* temp=ptr->next;
+		printf("\nElement popped is %d",temp->data);
+		ptr->next=ptr->next->next;
+		free(temp);
+	}
+}
+
+void display(node* head)
+{
+	if(head==NULL)
+	printf("No elements in the list to print.");
+	else
+	{
+		node* ptr=head;
+		printf("\nElements in the list: ");
+		while(ptr!=NULL)
+		{
+			printf("%d ",ptr->data);
+			ptr=ptr->next;
+		}
+	}
+}
+
+int main()
+{
+	int option;
+	do
+	{
+		printf("\n1. PUSH");
+		printf("\n2. POP");
+		printf("\n3. DISPLAY");
+		printf("\n4. EXIT");
+		
+		printf("\nEnter operation no. to perform: ");
+		scanf("%d",&option);
+		
+		switch(option)
+		{
+			case 1:
+				{
+					int option1,value;
+					printf("\nEnter value to be pushed: ");
+					scanf("%d",&value);
+					printf("\n1. PUSH AT HEAD");
+					printf("\n2. PUSH AT TAIL");
+					printf("\n3. PUSH AT A POSITION");
+					printf("\nEnter Push operation no. to be performed: ");
+					scanf("%d",&option1);
+					
+					switch(option1)
+					{
+						case 1: 
+						{
+						pushhead(&head,value);
+						break;
+						}
+						
+						case 2:
+						{
+						pushtail(&head,value);
+						break;			
+						}
+						
+						case 3:
+						{
+							int pos;
+							printf("Enter position of insertion: ");
+							scanf("%d",&pos);
+							pushpos(&head,value,pos);
+							break;		
+						}
+					} 
+				} break;
+				
+				case 2:
+					{
+					int option2;
+					
+					printf("\n1. POP AT HEAD");
+					printf("\n2. POP AT TAIL");
+					printf("\n3. POP AT A POSITION");
+					printf("\nEnter Push operation no. to be performed: ");
+					scanf("%d",&option2);
+					
+					switch(option2)
+					{
+						case 1: 
+						{
+						pophead(&head);
+						break;
+						}
+						
+						case 2:
+						{
+						poptail(&head);
+						break;			
+						}
+						
+						case 3:
+						{
+							int pos;
+							printf("\nEnter position of deletion: ");
+							scanf("%d",&pos);
+							poppos(&head,pos);
+							break;
+						}
+					
+				} break;
+		} 				
+				case 3:
+				{
+					display(head);
+					break;				
+				}
+				
+				case 4:
+					return;
+		}
+	
+	}while(option!=4);
+			
+	return 0;
+}
