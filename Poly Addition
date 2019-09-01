@@ -1,0 +1,132 @@
+#include<stdio.h>
+#include<stdlib.h>
+
+struct poly{
+	int coeff;
+	int power;
+	struct poly* next;
+};
+
+typedef struct poly poly;
+
+poly* poly1 = NULL;
+poly* poly2 = NULL;
+poly* res   = NULL;
+
+poly* getnewnode(int coeff,int power)
+{
+	poly* newnode = (poly*)malloc(sizeof(poly));
+	newnode->coeff=coeff;
+	newnode->power=power;
+	newnode->next=NULL;
+}
+
+void insert(poly** head_ref,int coeff,int power)
+{
+	if(*head_ref == NULL)
+	{
+		*head_ref = getnewnode(coeff,power);
+	}
+	else
+	{
+		poly* ptr = *head_ref;
+		while(ptr->next!=NULL)
+		{
+			ptr=ptr->next;
+		}
+		ptr->next = getnewnode(coeff,power);
+	}
+	
+}
+
+void poly_add(poly* res,poly* poly1, poly* poly2)
+{
+	while(poly1->next && poly2->next)
+	{
+		if(poly1->power > poly2->power)
+		{
+			res->power=poly1->power;
+			res->coeff=poly1->coeff;
+			poly1=poly1->next;
+		}
+		
+		else if(poly1->power < poly2->power)
+		{
+			res->power=poly2->power;
+			res->coeff=poly2->coeff;
+			poly2=poly2->next;
+		}
+
+   
+		else
+		{
+			res->power = poly1->power; 
+            res->coeff = poly1->coeff+poly2->coeff; 
+            poly1 = poly1->next; 
+            poly2 = poly2->next;
+		}
+		
+			res->next=(poly*)malloc(sizeof(poly));
+			res=res->next;
+			res->next=NULL;	
+	}
+		while(poly1->next || poly2->next)
+		{
+			if(poly1->next)
+			{
+				res->coeff=poly1->coeff;
+				res->power=poly1->power;
+				poly1=poly1->next;
+			}
+			
+			if(poly2->next)
+			{
+				res->coeff=poly2->coeff;
+				res->power=poly2->power;
+				poly2=poly2->next;
+			}
+			
+			res->next=(poly*)malloc(sizeof(poly));
+			res=res->next;
+			res->next=NULL;
+			
+		}
+		
+	
+}
+
+void print(poly* node)
+{
+	while(node != NULL) 
+    { 
+    printf("%dx^%d", node->coeff, node->power); 
+    node = node->next; 
+    if(node != NULL) 
+        printf(" + "); 
+    } 
+}
+
+int main()
+{
+	//Polynomial 1 is 4x^6 + 2x^3 + 8x^2 + 20x^0
+	insert(&poly1,4,6);
+	insert(&poly1,2,3);
+	insert(&poly1,8,2);
+	insert(&poly1,20,0);
+	print(poly1);	
+	//Polynomial 2 is 9x^8 + 6x^6 + 9x^3 + 7x^1 + 10x^0
+	insert(&poly2,9,8);
+	insert(&poly2,6,6);
+	insert(&poly2,9,3);
+	insert(&poly2,7,1);
+	insert(&poly2,10,0);
+	printf("\n");
+	print(poly2);
+	printf("\n");
+	res=(poly*)malloc(sizeof(poly));
+	poly_add(res,poly1,poly2);
+	print(res);
+
+	
+	return 0; 
+}
